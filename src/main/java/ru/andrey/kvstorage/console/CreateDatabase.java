@@ -1,7 +1,5 @@
 package ru.andrey.kvstorage.console;
 
-import ru.andrey.kvstorage.exception.DatabaseException;
-
 public class CreateDatabase implements DatabaseCommand {
     private ExecutionEnvironment environment;
     private String databaseName;
