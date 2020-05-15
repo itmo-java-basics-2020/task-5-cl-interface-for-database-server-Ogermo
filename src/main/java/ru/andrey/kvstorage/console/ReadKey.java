@@ -7,7 +7,9 @@ import java.util.Optional;
 
 public class ReadKey implements DatabaseCommand {
     private ExecutionEnvironment environment;
-    private String tableName, databaseName, objectKey;
+    private String tableName;
+    private String databaseName;
+    private String objectKey;
 
     public ReadKey(ExecutionEnvironment environment, String databaseName, String tableName, String objectKey) {
         this.environment = environment;
@@ -18,13 +20,13 @@ public class ReadKey implements DatabaseCommand {
 
     @Override
     public DatabaseCommandResult execute() {
-        Optional<Database> database = this.environment.getDatabase(this.databaseName);
+        Optional<Database> database = environment.getDatabase(databaseName);
         if (database.isEmpty()) {
-            return DatabaseCommandResult.error("Database " + this.databaseName + " doesn't exist.");
+            return DatabaseCommandResult.error(String.format("Database %s doesn't exist.", databaseName));
         }
         try {
-            String result = database.get().read(this.tableName, this.objectKey);
-            return DatabaseCommandResult.success("Value of key " + this.objectKey + " is " + result);
+            String result = database.get().read(tableName, objectKey);
+            return DatabaseCommandResult.success(String.format("Value of key %s is %s", objectKey, result));
         } catch (DatabaseException e) {
             return DatabaseCommandResult.error(e.getMessage());
         }

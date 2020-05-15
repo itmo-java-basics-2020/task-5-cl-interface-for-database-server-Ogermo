@@ -7,7 +7,10 @@ import java.util.Optional;
 
 public class UpdateKey implements DatabaseCommand {
     private ExecutionEnvironment environment;
-    private String tableName, databaseName, objectKey, objectValue;
+    private String tableName;
+    private String databaseName;
+    private String objectKey;
+    private String objectValue;
 
     public UpdateKey(ExecutionEnvironment environment, String databaseName, String tableName, String objectKey, String objectValue) {
         this.environment = environment;
@@ -19,13 +22,13 @@ public class UpdateKey implements DatabaseCommand {
 
     @Override
     public DatabaseCommandResult execute() {
-        Optional<Database> database = this.environment.getDatabase(this.databaseName);
+        Optional<Database> database = environment.getDatabase(databaseName);
         if (database.isEmpty()) {
-            return DatabaseCommandResult.error("Database " + this.databaseName + " doesn't exist.");
+            return DatabaseCommandResult.error(String.format("Database %s doesn't exist.", databaseName));
         }
         try {
-            database.get().write(this.tableName, this.objectKey, this.objectValue);
-            return DatabaseCommandResult.success("Key " + this.objectKey + " was updated with value " + this.objectValue);
+            database.get().write(tableName, objectKey, objectValue);
+            return DatabaseCommandResult.success(String.format("Key %s was updated with value %s", objectKey, objectValue));
         } catch (DatabaseException e) {
             return DatabaseCommandResult.error(e.getMessage());
         }

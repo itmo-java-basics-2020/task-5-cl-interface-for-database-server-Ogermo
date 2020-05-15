@@ -26,31 +26,36 @@ public interface DatabaseCommandResult {
 
     class CommandResult implements DatabaseCommandResult {
         private String result;
+        private String errorMessage;
         private DatabaseCommandStatus status;
 
         private CommandResult(String result, DatabaseCommandStatus status) {
-            this.result = result;
+            if (status == DatabaseCommandStatus.FAILED){
+                this.errorMessage = result;
+            } else {
+                this.result = result;
+            }
             this.status = status;
         }
 
         @Override
         public Optional<String> getResult() {
-            return Optional.ofNullable(this.result);
+            return Optional.ofNullable(result);
         }
 
         @Override
         public DatabaseCommandStatus getStatus() {
-            return this.status;
+            return status;
         }
 
         @Override
         public boolean isSuccess() {
-            return this.status.equals(DatabaseCommandStatus.SUCCESS);
+            return (status == DatabaseCommandStatus.SUCCESS);
         }
 
         @Override
         public String getErrorMessage() {
-            return this.result;
+            return errorMessage;
         }
     }
 }

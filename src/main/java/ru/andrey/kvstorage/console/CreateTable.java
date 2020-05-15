@@ -7,7 +7,8 @@ import java.util.Optional;
 
 public class CreateTable implements DatabaseCommand {
     private ExecutionEnvironment environment;
-    private String databaseName, tableName;
+    private String databaseName;
+    private String tableName;
 
     CreateTable(ExecutionEnvironment environment, String databaseName, String tableName) {
         this.environment = environment;
@@ -17,13 +18,13 @@ public class CreateTable implements DatabaseCommand {
 
     @Override
     public DatabaseCommandResult execute()  {
-        Optional<Database> database = this.environment.getDatabase(this.databaseName);
+        Optional<Database> database = environment.getDatabase(databaseName);
         if (database.isEmpty()) {
-            return DatabaseCommandResult.error("Database " + this.databaseName + " doesn't exist.");
+            return DatabaseCommandResult.error(String.format("Database %s doesn't exist.", databaseName));
         }
         try {
-            database.get().createTableIfNotExists(this.tableName);
-            return DatabaseCommandResult.success("Table " + this.tableName + " was created in database " + this.databaseName);
+            database.get().createTableIfNotExists(tableName);
+            return DatabaseCommandResult.success(String.format("Table %s was created in database %s", tableName, databaseName));
         } catch (DatabaseException e) {
             return DatabaseCommandResult.error(e.getMessage());
         }
